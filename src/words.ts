@@ -4,8 +4,11 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 export const WORDS = ['something', 'money', 'data', 'attention'] as const
 export const ASKS = WORDS.slice(1)
 
+/** ?slow=5 plays motion five times slower, to check it frame by frame (Emil: review at 2–5× duration). */
+export const SLOW = Math.max(1, Number(new URLSearchParams(location.search).get('slow')) || 1)
+
 /** Long enough to read a short word, short enough that three feel like one gesture. */
-export const HOLD_MS = 720
+export const HOLD_MS = 720 * SLOW
 
 /**
  * Shared behaviour for every version.

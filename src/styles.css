@@ -99,6 +99,28 @@ header p { margin: 0 0 48px; max-width: 560px; }
 /* 6 · Drop: the leaving word is popped out of layout (absolute) inside the button */
 .drop .layer { display: inline-block; }
 
+/* 7–16 · Swap variations */
+.swap .track { display: inline-grid; }
+.swap .layer { display: inline-block; }
+.swap .letters { display: inline-flex; }
+.swap .letter { display: inline-block; white-space: pre; }
+/* Slot: a window exactly one line tall (28px), aligned to the line's top like the Ticker; soft edges */
+.swap.clip { vertical-align: top; }
+.swap.clip .track { height: 28px; line-height: 28px; overflow: hidden;
+  -webkit-mask: linear-gradient(transparent, #000 16%, #000 84%, transparent); mask: linear-gradient(transparent, #000 16%, #000 84%, transparent); }
+.swap.flip .layer { transform-origin: 50% 50%; backface-visibility: hidden; }
+.group { margin-top: 64px; }
+.tag { font-size: 12px; line-height: 20px; padding: 0 8px; border-radius: 9999px; background: rgb(0 0 0 / 5%); }
+
+/* Drum: a cylinder in 3D, seen head-on. The stage holds the perspective (the fixed point of view); the cylinder
+   keeps its children in 3D; faces share one spot and are turned onto the cylinder. Back faces are hidden. */
+.drum .stage { display: inline-grid; perspective: 320px; perspective-origin: 50% 50%; }
+.drum .cyl { display: inline-grid; transform-style: preserve-3d; }
+.drum .face { grid-area: 1 / 1; white-space: nowrap; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.drum.clip { vertical-align: top; }
+.drum.clip .stage { height: 28px; line-height: 28px; overflow: hidden;
+  -webkit-mask: linear-gradient(transparent, #000 16%, #000 84%, transparent); mask: linear-gradient(transparent, #000 16%, #000 84%, transparent); }
+
 /* Reduced motion: fades stay, movement goes */
 @media (prefers-reduced-motion: reduce) {
   .word:active { transform: none; }
