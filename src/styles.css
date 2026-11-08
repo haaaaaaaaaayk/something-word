@@ -40,7 +40,7 @@ header p { margin: 0 0 48px; max-width: 560px; }
 /* one dotted underline for every version (text-decoration doesn't reach into the stacked cell) */
 .word::after { content: ''; position: absolute; left: 0; right: 0; bottom: 3px; border-bottom: 1px dotted var(--ink-muted);
   transition: opacity 160ms ease, border-color 160ms ease; }
-.cell { display: inline-grid; }
+.cell { display: inline-grid; pointer-events: none; }  /* the button is the only hover target; its insides change */
 .cell > * { grid-area: 1 / 1; }
 .sizer { visibility: hidden; }
 .cell { overflow: visible; white-space: nowrap; }
