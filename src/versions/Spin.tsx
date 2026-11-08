@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from 'react'
 import { SLOW, useHoverZone, useReducedMotion } from '../words'
 import { WordButton } from '../Word'
 
-/** This one rests on "information" instead of "something". */
-const SPIN_WORDS = ['information', 'money', 'data', 'attention'] as const
+/** No "something": it rests on attention and cycles attention → money → data. */
+const SPIN_WORDS = ['attention', 'money', 'data'] as const
 
-/* A full ring: 12 faces 30° apart, each word three times, so the drum can spin forever. RADIUS puts
+/* A full ring: 12 faces 30° apart, each word four times, so the drum can spin forever. RADIUS puts
    neighbouring words one line (28px) apart where they cross the front: r = (28 / 2) / tan(STEP / 2). */
 const STEP = 30
 const FACES = 360 / STEP
@@ -21,7 +21,7 @@ const TURN = { type: 'spring' as const, bounce: 0, visualDuration: 0.5 * SLOW }
 /**
  * D4 · Spin. Hover and the drum whips round a full turn and slows onto "money", then loops on its own, one word
  * every 1.2s, for as long as you stay. Leave and it whips round again, at least a full turn, and lands back on
- * "information". It blurs in proportion to its speed, up to 3px, so the fast spins smear like real motion and
+ * "attention". It blurs in proportion to its speed, up to 3px, so the fast spins smear like real motion and
  * the slow loop stays sharp. Every turn starts from the drum's current angle and velocity, so leaving mid-spin
  * carries the momentum into the spin back. Touch: tap to start, tap again to stop.
  * Reduced motion: no spin, the words crossfade in the same loop.
@@ -59,7 +59,7 @@ export function Spin() {
     active.current = false
     setOn(false)
     clearTimeout(timer.current)
-    const cycle = STEP * SPIN_WORDS.length // at least a full turn, onto the next "information" face
+    const cycle = STEP * SPIN_WORDS.length // at least a full turn, onto the next "attention" face
     go(Math.ceil((rot.get() + 360) / cycle) * cycle, SPIN)
   }
   useEffect(() => () => (clearTimeout(timer.current), anim.current?.stop()), [])
@@ -75,7 +75,7 @@ export function Spin() {
       fit={target}
       handlers={{ onPointerEnter, onClick: () => (on ? stop() : start()) }}
       className="drum spin"
-      aria-label="information: money, data, attention"
+      aria-label="money, data, attention"
     >
       <motion.span className="stage" style={{ filter: blur }}>
         <motion.span className="cyl" style={{ transform: drum }}>

@@ -145,7 +145,7 @@ export function App() {
             <Spin />.
           </span>
         </p>
-        <p className="idea">Hover: the drum whips round and slows onto money, then loops for as long as you stay. Leave: it whips round again and lands on information.</p>
+        <p className="idea">Hover: the drum whips round and slows onto money, then loops for as long as you stay. Leave: it whips round again and lands on attention.</p>
         <p className="recipe">12 faces, 30° apart, 52px radius · spin = full turn on a 0.9s spring · loop = 0.5s turn + 0.7s rest · blur follows speed, up to 3px</p>
       </section>
       <header className="group">
