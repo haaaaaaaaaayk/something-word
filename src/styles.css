@@ -96,6 +96,9 @@ header p { margin: 0 0 48px; max-width: 560px; }
   .word:hover::after { border-bottom-color: var(--ink); }
 }
 
+/* 6 · Drop: the leaving word is popped out of layout (absolute) inside the button */
+.drop .layer { display: inline-block; }
+
 /* Reduced motion: fades stay, movement goes */
 @media (prefers-reduced-motion: reduce) {
   .word:active { transform: none; }

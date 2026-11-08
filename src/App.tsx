@@ -4,6 +4,7 @@ import { Focus } from './versions/Focus'
 import { Decode } from './versions/Decode'
 import { Correction } from './versions/Correction'
 import { Scrub } from './versions/Scrub'
+import { Drop } from './versions/Drop'
 
 const VERSIONS: { n: number; name: string; idea: string; recipe: string; Demo: ComponentType }[] = [
   {
@@ -41,6 +42,13 @@ const VERSIONS: { n: number; name: string; idea: string; recipe: string; Demo: C
     recipe: 'Direct manipulation, 1:1 with the pointer · three stops · dot on a 0.2s spring · direction-aware slide',
     Demo: Scrub,
   },
+  {
+    n: 6,
+    name: 'Drop',
+    idea: 'Each ask falls into the slot from above while the last one falls out the bottom.',
+    recipe: 'AnimatePresence popLayout · 60% travel + 4px blur · 240ms in, 160ms out · rises back on leave',
+    Demo: Drop,
+  },
 ]
 
 export function App() {
@@ -49,7 +57,7 @@ export function App() {
       <header>
         <h1>Something</h1>
         <p>
-          Five ways the word turns into what a product actually asks for. Hover the word with a mouse: it becomes
+          Six ways the word turns into what a product actually asks for. Hover the word with a mouse: it becomes
           money, then data, then attention. Click or tap it to step through.
         </p>
       </header>
