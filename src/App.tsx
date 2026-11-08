@@ -7,6 +7,7 @@ import { Scrub } from './versions/Scrub'
 import { Drop } from './versions/Drop'
 import { Swap, type SwapConfig } from './versions/Swap'
 import { Drum, type DrumConfig } from './versions/Drum'
+import { Spin } from './versions/Spin'
 
 const VERSIONS: { n: number; name: string; idea: string; recipe: string; Demo: ComponentType }[] = [
   {
@@ -132,6 +133,21 @@ export function App() {
           <p className="recipe">{recipe}</p>
         </section>
       ))}
+      <section className="card">
+        <div className="meta">
+          <span className="n">D4</span>
+          <h2>Spin</h2>
+          <span className="tag">open + speed blur</span>
+        </div>
+        <p className="sentence">
+          I design the moments where a product asks people for{' '}
+          <span className="nowrap">
+            <Spin />.
+          </span>
+        </p>
+        <p className="idea">Hover: the drum whips round and slows onto money, then loops for as long as you stay. Leave: it whips round again and lands on information.</p>
+        <p className="recipe">12 faces, 30° apart, 52px radius · spin = full turn on a 0.9s spring · loop = 0.5s turn + 0.7s rest · blur follows speed, up to 3px</p>
+      </section>
       <header className="group">
         <h1>Drop, nine ways</h1>
         <p>Variations on 6. Each one changes a single thing, so the difference is what you see.</p>
