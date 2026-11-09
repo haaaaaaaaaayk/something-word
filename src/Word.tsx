@@ -1,6 +1,6 @@
 import { forwardRef, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { motion } from 'motion/react'
-import { ASKS, WORDS, useReducedMotion } from './words'
+import { ASKS, WORDS } from './words'
 
 type Props = {
   children: ReactNode
@@ -14,21 +14,22 @@ type Props = {
 
 /**
  * The word as a button inside the sentence. Every word is mounted in one grid cell, so swaps never stack.
- * The slot's width follows the word on a critically damped spring: the period and whatever comes after slide
- * along instead of jumping, and no gap is left behind a short word. Animating width is a layout property,
- * accepted here because it's one inline box on a once-a-visit interaction; reduced motion snaps it.
+ * The slot is fixed at the widest word it will show, so the sentence never reflows or wraps mid-animation.
  * Screen readers get the full meaning once, as the label, instead of hearing every change.
  */
 export const WordButton = forwardRef<HTMLButtonElement, Props>(function WordButton(
   { children, handlers, className = '', extra, fit, ...rest },
   ref,
 ) {
-  const reduced = useReducedMotion()
+  /* The slot is as wide as the widest thing it will ever show, measured once, so the sentence around it never
+     reflows or wraps while the word changes. Correction shows "rest + ask" side by side, so it measures those. */
   const measure = useRef<HTMLSpanElement>(null)
   const [width, setWidth] = useState<number | null>(null)
+  const candidates = className.includes('correction') ? ASKS.map((a) => `${WORDS[0]} ${a}`).concat(WORDS[0]) : WORDS
   useLayoutEffect(() => {
-    if (fit !== undefined && measure.current) setWidth(measure.current.offsetWidth)
-  }, [fit])
+    if (fit === undefined || !measure.current) return
+    setWidth(Math.max(...Array.from(measure.current.children, (c) => (c as HTMLElement).offsetWidth)))
+  }, [fit === undefined])
 
   return (
     <button
@@ -42,9 +43,7 @@ export const WordButton = forwardRef<HTMLButtonElement, Props>(function WordButt
       <motion.span
         className="cell"
         aria-hidden="true"
-        initial={false}
-        animate={width === null ? undefined : { width }}
-        transition={reduced ? { duration: 0 } : { type: 'spring', bounce: 0, visualDuration: 0.3 }}
+        style={width === null ? undefined : { width }}
       >
         {fit === undefined &&
           WORDS.map((w) => (
@@ -56,7 +55,9 @@ export const WordButton = forwardRef<HTMLButtonElement, Props>(function WordButt
       </motion.span>
       {fit !== undefined && (
         <span ref={measure} className="measure" aria-hidden="true">
-          {fit}
+          {candidates.map((c) => (
+            <span key={c} style={{ display: 'block' }}>{c}</span>
+          ))}
         </span>
       )}
       {extra}
