@@ -1,4 +1,5 @@
-import type { ComponentType } from 'react'
+import { Fragment, useState, type ComponentType } from 'react'
+import { setWords } from './words'
 import { Ticker } from './versions/Ticker'
 import { Focus } from './versions/Focus'
 import { Decode } from './versions/Decode'
@@ -7,7 +8,7 @@ import { Scrub } from './versions/Scrub'
 import { Drop } from './versions/Drop'
 import { Swap, type SwapConfig } from './versions/Swap'
 import { Drum, type DrumConfig } from './versions/Drum'
-import { Spin } from './versions/Spin'
+import { Spin, setSpinCount } from './versions/Spin'
 
 const VERSIONS: { n: number; name: string; idea: string; recipe: string; Demo: ComponentType }[] = [
   {
@@ -86,16 +87,54 @@ const DROPS: { name: string; tag: string; idea: string; recipe: string; config: 
     recipe: 'scale 1.2 → 1, old to 0.85 · 6px blur · 280ms', config: { from: 'top', travel: 0, blur: 6, depth: true, enter: 0.28 } },
 ]
 
+/* The visitor's words live in the link (?s=sentence&w=rest,word,word), so a version can be shared. */
+const q = new URLSearchParams(location.search)
+const DEFAULT_SENTENCE = 'I design the moments where a product asks people for'
+const DEFAULT_WORDS = 'something, money, data, attention'
+const parse = (w: string) => w.split(',').map((x) => x.trim()).filter(Boolean).slice(0, 8)
+function apply(w: string) {
+  const list = parse(w)
+  const words = list.length >= 2 ? list : parse(DEFAULT_WORDS)
+  setWords(words)
+  setSpinCount(words.length - 1)
+}
+apply(q.get('w') || DEFAULT_WORDS)
+
 export function App() {
+  const [sentence, setSentence] = useState(q.get('s') || DEFAULT_SENTENCE)
+  const [words, setWordsText] = useState(q.get('w') || DEFAULT_WORDS)
+  const [version, setVersion] = useState(0)
+  const update = (s: string, w: string) => {
+    setSentence(s)
+    setWordsText(w)
+    apply(w)
+    setVersion((v) => v + 1) // remount the demos so each one picks up the new words
+    const u = new URL(location.href)
+    u.searchParams.set('s', s)
+    u.searchParams.set('w', w)
+    history.replaceState(null, '', u)
+  }
   return (
     <main>
       <header>
-        <h1>Something</h1>
+        <h1>Spin a word</h1>
         <p>
-          Ways the word turns into what a product actually asks for. Hover the word with a mouse: it becomes
-          money, then data, then attention. Click or tap it to step through.
+          Nineteen ways a word can turn into what it really means. Write your sentence and your words, then hover
+          the word in any version: it changes into the others. Click or tap to step through. The link keeps your
+          words, so you can share it.
         </p>
+        <div className="controls">
+          <label>
+            <span>Sentence</span>
+            <input value={sentence} maxLength={120} onChange={(e) => update(e.target.value, words)} />
+          </label>
+          <label>
+            <span>Words, separated by commas: the first one rests, the rest are what it turns into</span>
+            <input value={words} maxLength={160} onChange={(e) => update(sentence, e.target.value)} />
+          </label>
+        </div>
       </header>
+      <Fragment key={version}>
       {VERSIONS.map(({ n, name, idea, recipe, Demo }) => (
         <section key={n} className="card">
           <div className="meta">
@@ -103,7 +142,7 @@ export function App() {
             <h2>{name}</h2>
           </div>
           <p className="sentence">
-            I design the moments where a product asks people for{' '}
+            {sentence}{' '}
             <span className="nowrap">
               <Demo />.
             </span>
@@ -124,7 +163,7 @@ export function App() {
             <span className="tag">{tag}</span>
           </div>
           <p className="sentence">
-            I design the moments where a product asks people for{' '}
+            {sentence}{' '}
             <span className="nowrap">
               <Drum {...config} />.
             </span>
@@ -140,7 +179,7 @@ export function App() {
           <span className="tag">open + speed blur</span>
         </div>
         <p className="sentence">
-          I design the moments where a product asks people for{' '}
+          {sentence}{' '}
           <span className="nowrap">
             <Spin />.
           </span>
@@ -160,7 +199,7 @@ export function App() {
             <span className="tag">{tag}</span>
           </div>
           <p className="sentence">
-            I design the moments where a product asks people for{' '}
+            {sentence}{' '}
             <span className="nowrap">
               <Swap {...config} />.
             </span>
@@ -169,6 +208,7 @@ export function App() {
           <p className="recipe">{recipe}</p>
         </section>
       ))}
+      </Fragment>
     </main>
   )
 }

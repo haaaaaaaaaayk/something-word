@@ -1,6 +1,6 @@
 import { forwardRef, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { motion } from 'motion/react'
-import { WORDS, useReducedMotion } from './words'
+import { ASKS, WORDS, useReducedMotion } from './words'
 
 type Props = {
   children: ReactNode
@@ -35,7 +35,7 @@ export const WordButton = forwardRef<HTMLButtonElement, Props>(function WordButt
       ref={ref}
       type="button"
       className={`word ${className}`}
-      aria-label="something: money, data, attention"
+      aria-label={`${WORDS[0]}: ${ASKS.join(', ')}`}
       {...handlers}
       {...rest}
     >

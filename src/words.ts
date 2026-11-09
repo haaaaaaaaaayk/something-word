@@ -1,8 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-/** "something" is what the sentence says; the other three are what it means. */
-export const WORDS = ['something', 'money', 'data', 'attention'] as const
-export const ASKS = WORDS.slice(1)
+/** The first word is what the sentence says; the rest are what it means. Visitors can replace them, so both
+    lists are live: setWords swaps their contents in place and the page remounts the demos. */
+export const WORDS: string[] = ['something', 'money', 'data', 'attention']
+export const ASKS: string[] = WORDS.slice(1)
+export function setWords(list: string[]) {
+  WORDS.splice(0, WORDS.length, ...list)
+  ASKS.splice(0, ASKS.length, ...list.slice(1))
+}
 
 /** ?slow=5 plays motion five times slower, to check it frame by frame (Emil: review at 2–5× duration). */
 export const SLOW = Math.max(1, Number(new URLSearchParams(location.search).get('slow')) || 1)
@@ -30,7 +35,7 @@ export function useWordCycle() {
     onEnter: () => {
       clear()
       setIndex(1)
-      timers.current = [2, 3].map((n, k) => window.setTimeout(() => setIndex(n), HOLD_MS * (k + 1)))
+      timers.current = WORDS.slice(2).map((_, k) => window.setTimeout(() => setIndex(k + 2), HOLD_MS * (k + 1)))
     },
     onLeave: () => {
       clear()

@@ -1,16 +1,22 @@
 import { animate, motion, useMotionValue, useMotionValueEvent, useTransform, useVelocity, type MotionValue } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
-import { SLOW, useHoverZone, useReducedMotion } from '../words'
+import { ASKS, SLOW, useHoverZone, useReducedMotion } from '../words'
 import { WordButton } from '../Word'
 
-/** No "something": it rests on attention and cycles attention → money → data. */
-const SPIN_WORDS = ['attention', 'money', 'data'] as const
+/** No resting word: it rests on the first ask and cycles through the asks. */
+const SPIN_WORDS = ASKS
 
 /* A full ring: 12 faces 30° apart, each word four times, so the drum can spin forever. RADIUS puts
    neighbouring words one line (28px) apart where they cross the front: r = (28 / 2) / tan(STEP / 2). */
-const STEP = 30
-const FACES = 360 / STEP
-const RADIUS = 14 / Math.tan(((STEP / 2) * Math.PI) / 180) // ≈ 52px
+let STEP = 30
+let FACES = 360 / STEP
+let RADIUS = 14 / Math.tan(((STEP / 2) * Math.PI) / 180) // ≈ 52px
+/** Rebuild the ring for n words: at least 12 faces, a whole number of turns of the word list, so no seam. */
+export function setSpinCount(n: number) {
+  FACES = n * Math.ceil(12 / n)
+  STEP = 360 / FACES
+  RADIUS = 14 / Math.tan(((STEP / 2) * Math.PI) / 180)
+}
 const LOOP_EVERY = 1200 // ms per word in the loop: a 0.5s turn, then 0.7s at rest to read it
 const wordAt = (angle: number) => SPIN_WORDS[(((Math.round(angle / STEP) % FACES) + FACES) % FACES) % SPIN_WORDS.length]
 
@@ -75,7 +81,7 @@ export function Spin() {
       fit={target}
       handlers={{ onPointerEnter, onClick: () => (on ? stop() : start()) }}
       className="drum spin"
-      aria-label="money, data, attention"
+      aria-label={ASKS.join(', ')}
     >
       <motion.span className="stage" style={{ filter: blur }}>
         <motion.span className="cyl" style={{ transform: drum }}>

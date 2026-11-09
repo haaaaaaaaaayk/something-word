@@ -130,3 +130,10 @@ header p { margin: 0 0 48px; max-width: 560px; }
   .correction .ask, .correction .ask[data-on='true'] { transform: none; }
   .scrub .layer[data-pos] { transform: none; }
 }
+
+/* the visitor's words: two plain fields, labelled above */
+.controls { display: grid; gap: 16px; margin: -16px 0 48px; }
+.controls label { display: grid; gap: 4px; font-size: 14px; line-height: 20px; }
+.controls input { height: 40px; padding: 0 12px; border: 1px solid var(--rule); border-radius: 8px; background: transparent;
+  color: var(--ink); font: inherit; font-size: 16px; }
+.controls input:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
